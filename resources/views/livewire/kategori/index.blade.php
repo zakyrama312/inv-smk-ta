@@ -6,7 +6,7 @@
             <p class="text-gray-600 mt-1">Manajemen kategori barang inventaris</p>
         </div>
         <button wire:click="openModal" type="button"
-            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-105">
+            class="inline-flex items-center px-4 py-2 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-md transition-all transform hover:scale-105">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -60,7 +60,7 @@
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                <thead class="bg-linear-to-r from-gray-50 to-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No
                         </th>
@@ -83,7 +83,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div
-                                    class="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                    class="shrink-0 h-10 w-10 bg-linear-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -190,7 +190,7 @@
                 </button>
 
                 <button wire:click.prevent="save" type="button"
-                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold shadow hover:scale-105 transition">
+                    class="px-4 py-2 rounded-lg bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold shadow hover:scale-105 transition">
                     Simpan
                 </button>
             </div>
