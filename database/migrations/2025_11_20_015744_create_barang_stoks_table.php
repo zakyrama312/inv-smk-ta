@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('barang_stoks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_id')->constrained('barang')->cascadeOnDelete();
-            $table->foreignId('ruang_id')->constrained('ruang')->cascadeOnDelete();
             $table->string('satuan')->default('unit'); // unit, pcs, set, dll
             $table->integer('total_stok')->default(0); // total di ruangan ini
             $table->integer('stok_masuk')->default(0); // history stok masuk

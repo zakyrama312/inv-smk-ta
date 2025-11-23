@@ -35,7 +35,7 @@
                     <!-- CENTER: MENU NAVIGATION -->
                     <div class="hidden sm:flex flex-1 justify-center space-x-1">
 
-                        <a href="{{ route('dashboard') }}"
+                        <a wire:navigate href="{{ route('dashboard') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50' }}">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -45,7 +45,7 @@
                         </a>
 
                         @if(auth()->user()->isAdmin())
-                        <a href="{{ route('admin.users.index') }}"
+                        <a wire:navigate href="{{ route('admin.users.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -78,13 +78,13 @@
                                 x-transition:leave-end="transform opacity-0 scale-95"
                                 class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div class="py-1">
-                                    <a href="{{ route('admin.prodi.index') }}"
+                                    <a wire:navigate href="{{ route('admin.prodi.index') }}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Prodi</a>
                                     <a wire:navigate href="{{ route('admin.kategori.index') }}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kategori</a>
-                                    <a href="{{ route('admin.kondisi.index') }}"
+                                    <a wire:navigate href="{{ route('admin.kondisi.index') }}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kondisi</a>
-                                    <a href="{{ route('admin.ruang.index') }}"
+                                    <a wire:navigate href="{{ route('admin.ruang.index') }}"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ruang</a>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                         @endif
                         @if(auth()->user()->hasRole(['admin', 'kaprodi']))
                         <!-- Barang -->
-                        <a href="{{ route('barang.index') }}"
+                        <a wire:navigate href="{{ route('admin.barang.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -105,7 +105,7 @@
                         @endif
                         @if(auth()->user()->hasRole(['admin', 'kaprodi','anggota']))
                         <!-- Peminjaman -->
-                        <a href="{{ route('peminjaman.index') }}"
+                        <a wire:navigate href="{{ route('peminjaman.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -115,7 +115,7 @@
                         </a>
 
                         <!-- Permintaan -->
-                        <a href="{{ route('permintaan.index') }}"
+                        <a wire:navigate href="{{ route('permintaan.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -149,13 +149,13 @@
                                 x-transition:leave-end="transform opacity-0 scale-95"
                                 class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div class="py-1">
-                                    <a href="{{ route('laporan.index') }}?type=barang"
+                                    <a wire:navigate href="{{ route('laporan.index') }}?type=barang"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Laporan
                                         Barang</a>
-                                    <a href="{{ route('laporan.index') }}?type=peminjaman"
+                                    <a wire:navigate href="{{ route('laporan.index') }}?type=peminjaman"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Laporan
                                         Peminjaman</a>
-                                    <a href="{{ route('laporan.index') }}?type=permintaan"
+                                    <a wire:navigate href="{{ route('laporan.index') }}?type=permintaan"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Laporan
                                         Permintaan</a>
                                 </div>
@@ -182,7 +182,7 @@
                             {{ ucfirst(auth()->user()->role) }}
                         </span>
 
-                        <a href="{{ route('logout') }}"
+                        <a wire:navigate href="{{ route('logout') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -206,7 +206,7 @@
     </div>
 
     @livewireScripts
-
+    @livewireNavigate
 
 </body>
 

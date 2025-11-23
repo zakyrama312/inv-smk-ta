@@ -1,10 +1,16 @@
 <?php
 
+use App\Livewire\Users\Index as UsersIndex;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Auth\Login;
+use App\Livewire\Barang\Create;
+use App\Livewire\Barang\Index as BarangIndex;
 use App\Livewire\Dashboard\Index as Dashboard;
 use App\Livewire\Kategori\Index;
+use App\Livewire\Kondisi\Index as KondisiIndex;
+use App\Livewire\Prodi\Index as ProdiIndex;
+use App\Livewire\Ruang\Index as RuangIndex;
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -17,31 +23,21 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin Only Routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', function () {
-            return view('livewire.users.index');
-        })->name('users.index');
-        Route::get('/prodi', function () {
-            return view('livewire.prodi.index');
-        })->name('prodi.index');
-
-
+        // master data management
+        Route::get('/users', UsersIndex::class)->name('users.index');
+        Route::get('/prodi', ProdiIndex::class)->name('prodi.index');
         Route::get('/kategori', Index::class)->name('kategori.index');
-
-        Route::get('/kondisi', function () {
-            return view('livewire.kondisi.index');
-        })->name('kondisi.index');
-        Route::get('/ruang', function () {
-            return view('livewire.ruang.index');
-        })->name('ruang.index');
+        Route::get('/kondisi', KondisiIndex::class)->name('kondisi.index');
+        Route::get('/ruang', RuangIndex::class)->name('ruang.index');
+        // data barang
+        Route::get('/barang', BarangIndex::class)->name('barang.index');
+        Route::get('/tambah-barang', Create::class)->name('barang.create');
     });
 
-    // Barang Routes (accessible by all authenticated users)
-    Route::get('/barang', function () {
-        return view('livewire.barang.index');
-    })->name('barang.index');
+
 
     // Permintaan Routes (accessible by kaprodi & anggota)
-    Route::middleware(['role:kaprodi,anggota'])->group(function () {
+    Route::middleware(['role:admin,kaprodi,anggota'])->group(function () {
         Route::get('/permintaan', function () {
             return view('livewire.permintaan.index');
         })->name('permintaan.index');
