@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('prodi_id')->constrained('prodi')->cascadeOnDelete();
             $table->foreignId('kategori_id')->constrained('kategori')->cascadeOnDelete();
             $table->foreignId('kondisi_id')->constrained('kondisi')->restrictOnDelete();
+            $table->foreignId('ruang_id')->constrained('ruang')->cascadeOnDelete();
             $table->string('nama_barang');
             $table->string('slug')->unique();
             $table->string('kode_barang')->unique()->nullable(); // untuk barcode/QR

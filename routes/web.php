@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Barang\Edit;
 use App\Livewire\Users\Index as UsersIndex;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
         // data barang
         Route::get('/barang', BarangIndex::class)->name('barang.index');
         Route::get('/tambah-barang', Create::class)->name('barang.create');
+        Route::get('/barang/{barang}/edit', Edit::class)->name('barang.edit');
     });
 
 

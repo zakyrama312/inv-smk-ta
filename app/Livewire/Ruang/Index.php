@@ -112,8 +112,9 @@ class Index extends Component
             ->when($this->search, function ($query) {
                 $query->where('nama_ruang', 'like', '%' . $this->search . '%');
             })
-            ->withCount('barangStoks')
+            ->withCount('barang')
             ->latest()
+            ->where('prodi_id', auth()->user()->prodi_id)
             ->paginate(10);
 
         return view('livewire.ruang.index')->with([

@@ -88,17 +88,21 @@
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Barang</th>
+                            Tanggal Masuk
+                        </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Kode</th>
+                            Barang</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Kategori</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Prodi</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Kondisi</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Jumlah</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Stok</th>
+                            Ruang</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Keterangan
+                        </th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Aksi</th>
                     </tr>
@@ -108,6 +112,9 @@
                     <tr wire:key="barang-{{ $barang->id }}" class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ $barangs->firstItem() + $index }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ $barang->created_at->format('d M Y') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -133,24 +140,11 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($barang->kode_barang)
-                            <span class="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
-                                {{ $barang->kode_barang }}
-                            </span>
-                            @else
-                            <span class="text-gray-400 text-xs">-</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 text-xs font-semibold bg-purple-100 text-purple-800 rounded-full">
                                 {{ $barang->kategori->nama_kategori }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full">
-                                {{ $barang->prodi->nama_prodi }}
-                            </span>
-                        </td>
+
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span @class([ 'px-3 py-1 text-xs font-semibold rounded-full'
                                 , 'bg-green-100 text-green-800'=> $barang->kondisi->nama_kondisi === 'Baik',
@@ -177,8 +171,13 @@
                                     @endif
                             </div>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full">
+                                {{ $barang->ruang->nama_ruang }}
+                            </span>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <a href="{{ route('barang.edit', $barang) }}"
+                            <a href="{{ route('admin.barang.edit', $barang) }}"
                                 class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded-lg transition-colors mr-2">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -33,6 +33,16 @@ class Prodi extends Model
         return $this->hasMany(User::class);
     }
 
+    public function kategoris(): HasMany
+    {
+        return $this->hasMany(Kategori::class);
+    }
+
+    public function kondisis(): HasMany
+    {
+        return $this->hasMany(Kondisi::class);
+    }
+
     // Helper method
     public function getTotalBarangAttribute()
     {

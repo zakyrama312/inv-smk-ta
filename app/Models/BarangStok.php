@@ -14,19 +14,20 @@ class BarangStok extends Model
 
     protected $fillable = [
         'barang_id',
-        'ruang_id',
-        'satuan',
-        'total_stok',
+        'stok_awal',
         'stok_masuk',
         'stok_keluar',
+        'stok_akhir',
+        'satuan',
         'status',
         'keterangan',
     ];
 
     protected $casts = [
-        'total_stok' => 'integer',
+        'stok_awal' => 'integer',
         'stok_masuk' => 'integer',
         'stok_keluar' => 'integer',
+        'stok_akhir' => 'integer',
     ];
 
     // Relationships
@@ -35,35 +36,51 @@ class BarangStok extends Model
         return $this->belongsTo(Barang::class);
     }
 
-    public function ruang(): BelongsTo
-    {
-        return $this->belongsTo(Ruang::class);
-    }
+
 
     // Helper methods
-    public function updateStok($jumlah, $tipe = 'masuk')
+    public function hitungStokAkhir()
     {
-        if ($tipe === 'masuk') {
-            $this->increment('stok_masuk', $jumlah);
-            $this->increment('total_stok', $jumlah);
-        } else {
-            $this->increment('stok_keluar', $jumlah);
-            $this->decrement('total_stok', $jumlah);
-        }
+        $this->stok_akhir = $this->stok_awal + $this->stok_masuk - $this->stok_keluar;
+        $this->updateStatus();
+        $this->save();
+        return $this->stok_akhir;
+    }
 
-        // Update status based on stock
-        if ($this->total_stok <= 0) {
+    public function tambahStokMasuk($jumlah, $keterangan = null)
+    {
+        $this->increment('stok_masuk', $jumlah);
+        $this->hitungStokAkhir();
+
+        if ($keterangan) {
+            $this->keterangan = $keterangan;
+            $this->save();
+        }
+    }
+
+    public function tambahStokKeluar($jumlah, $keterangan = null)
+    {
+        $this->increment('stok_keluar', $jumlah);
+        $this->hitungStokAkhir();
+
+        if ($keterangan) {
+            $this->keterangan = $keterangan;
+            $this->save();
+        }
+    }
+
+    public function updateStatus()
+    {
+        if ($this->stok_akhir <= 0) {
             $this->status = 'kosong';
-        } elseif ($this->status === 'kosong') {
+        } else {
             $this->status = 'tersedia';
         }
-
-        $this->save();
     }
 
     public function isAvailable($jumlah = 1): bool
     {
-        return $this->status === 'tersedia' && $this->total_stok >= $jumlah;
+        return $this->status === 'tersedia' && $this->stok_akhir >= $jumlah;
     }
 
     // Scopes
@@ -74,6 +91,22 @@ class BarangStok extends Model
 
     public function scopeTersedia($query)
     {
-        return $query->where('status', 'tersedia')->where('total_stok', '>', 0);
+        return $query->where('status', 'tersedia')->where('stok_akhir', '>', 0);
+    }
+
+    // Events
+    protected static function booted()
+    {
+        // Auto calculate stok_akhir saat create/update
+        static::saving(function ($barangStok) {
+            $barangStok->stok_akhir = $barangStok->stok_awal + $barangStok->stok_masuk - $barangStok->stok_keluar;
+
+            // Update status
+            if ($barangStok->stok_akhir <= 0) {
+                $barangStok->status = 'kosong';
+            } else {
+                $barangStok->status = 'tersedia';
+            }
+        });
     }
 }

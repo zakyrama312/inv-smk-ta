@@ -18,6 +18,7 @@ class Barang extends Model
         'prodi_id',
         'kategori_id',
         'kondisi_id',
+        'ruang_id',
         'nama_barang',
         'slug',
         'kode_barang',
@@ -43,6 +44,11 @@ class Barang extends Model
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);
+    }
+
+    public function ruang(): BelongsTo
+    {
+        return $this->belongsTo(Ruang::class);
     }
 
     public function kondisi(): BelongsTo

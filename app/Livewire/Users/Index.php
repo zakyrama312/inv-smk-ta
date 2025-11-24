@@ -176,6 +176,7 @@ class Index extends Component
 
     public function render()
     {
+        $prodiId = auth()->user()->prodi_id;
         $users = User::query()
             ->with('prodi')
             ->when($this->search, function ($query) {
@@ -190,6 +191,7 @@ class Index extends Component
             ->when($this->filterProdi, function ($query) {
                 $query->where('prodi_id', $this->filterProdi);
             })
+            ->where('prodi_id', $prodiId)
             ->latest()
             ->paginate(10);
 

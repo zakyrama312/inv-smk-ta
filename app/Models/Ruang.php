@@ -25,9 +25,9 @@ class Ruang extends Model
         return $this->belongsTo(Prodi::class);
     }
 
-    public function barangStoks(): HasMany
+    public function barang(): HasMany
     {
-        return $this->hasMany(BarangStok::class);
+        return $this->hasMany(Barang::class);
     }
 
     // Helper method

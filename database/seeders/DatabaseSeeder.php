@@ -33,28 +33,47 @@ class DatabaseSeeder extends Seeder
             'slug' => 'multimedia',
         ]);
 
-        // Create Kategori
-        $kategoris = [
-            ['nama_kategori' => 'Elektronik', 'slug' => 'elektronik'],
-            ['nama_kategori' => 'Komputer', 'slug' => 'komputer'],
-            ['nama_kategori' => 'Jaringan', 'slug' => 'jaringan'],
-            ['nama_kategori' => 'Audio Visual', 'slug' => 'audio-visual'],
-            ['nama_kategori' => 'Alat Tulis', 'slug' => 'alat-tulis'],
+        // Create Kategori (per prodi)
+        $kategorisTKJ = [
+            ['prodi_id' => $tkj->id, 'nama_kategori' => 'Elektronik', 'slug' => 'elektronik-tkj'],
+            ['prodi_id' => $tkj->id, 'nama_kategori' => 'Komputer', 'slug' => 'komputer-tkj'],
+            ['prodi_id' => $tkj->id, 'nama_kategori' => 'Jaringan', 'slug' => 'jaringan-tkj'],
         ];
 
-        foreach ($kategoris as $kategori) {
+        $kategorisRPL = [
+            ['prodi_id' => $rpl->id, 'nama_kategori' => 'Komputer', 'slug' => 'komputer-rpl'],
+            ['prodi_id' => $rpl->id, 'nama_kategori' => 'Software', 'slug' => 'software-rpl'],
+        ];
+
+        $kategorisMM = [
+            ['prodi_id' => $mm->id, 'nama_kategori' => 'Audio Visual', 'slug' => 'audio-visual-mm'],
+            ['prodi_id' => $mm->id, 'nama_kategori' => 'Kamera', 'slug' => 'kamera-mm'],
+        ];
+
+        foreach (array_merge($kategorisTKJ, $kategorisRPL, $kategorisMM) as $kategori) {
             Kategori::create($kategori);
         }
 
-        // Create Kondisi
-        $kondisis = [
-            ['nama_kondisi' => 'Baik'],
-            ['nama_kondisi' => 'Rusak Ringan'],
-            ['nama_kondisi' => 'Rusak Berat'],
-            ['nama_kondisi' => 'Hilang'],
+        // Create Kondisi (per prodi)
+        $kondisisTKJ = [
+            ['prodi_id' => $tkj->id, 'nama_kondisi' => 'Baik'],
+            ['prodi_id' => $tkj->id, 'nama_kondisi' => 'Rusak Ringan'],
+            ['prodi_id' => $tkj->id, 'nama_kondisi' => 'Rusak Berat'],
         ];
 
-        foreach ($kondisis as $kondisi) {
+        $kondisisRPL = [
+            ['prodi_id' => $rpl->id, 'nama_kondisi' => 'Baik'],
+            ['prodi_id' => $rpl->id, 'nama_kondisi' => 'Rusak Ringan'],
+            ['prodi_id' => $rpl->id, 'nama_kondisi' => 'Rusak Berat'],
+        ];
+
+        $kondisisMM = [
+            ['prodi_id' => $mm->id, 'nama_kondisi' => 'Baik'],
+            ['prodi_id' => $mm->id, 'nama_kondisi' => 'Rusak Ringan'],
+            ['prodi_id' => $mm->id, 'nama_kondisi' => 'Rusak Berat'],
+        ];
+
+        foreach (array_merge($kondisisTKJ, $kondisisRPL, $kondisisMM) as $kondisi) {
             Kondisi::create($kondisi);
         }
 
@@ -79,7 +98,7 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => 'password',
             'role' => 'admin',
-            'prodi_id' => null,
+            'prodi_id' => 2,
         ]);
 
         // Kaprodi TKJ

@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('barang_stoks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_id')->constrained('barang')->cascadeOnDelete();
-            $table->string('satuan')->default('unit'); // unit, pcs, set, dll
-            $table->integer('total_stok')->default(0); // total di ruangan ini
-            $table->integer('stok_masuk')->default(0); // history stok masuk
-            $table->integer('stok_keluar')->default(0); // history stok keluar
-            $table->enum('status', ['tersedia', 'dipinjam', 'rusak', 'hilang'])->default('tersedia');
+            $table->integer('stok_awal')->default(0); // stok pertama kali masuk
+            $table->integer('stok_masuk')->default(0); // total stok yang masuk (akumulasi)
+            $table->integer('stok_keluar')->default(0); // total stok yang keluar (akumulasi)
+            $table->integer('stok_akhir')->default(0); // stok saat ini (calculated)
+            $table->string('satuan')->nullable();
+            $table->enum('status', ['tersedia', 'kosong'])->default('tersedia');
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });

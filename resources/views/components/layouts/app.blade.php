@@ -44,7 +44,7 @@
                             Dashboard
                         </a>
 
-                        @if(auth()->user()->isAdmin())
+                        @if(auth()->user()->hasRole(['admin']))
                         <a wire:navigate href="{{ route('admin.users.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,9 +89,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        @endif
-                        @if(auth()->user()->hasRole(['admin', 'kaprodi']))
                         <!-- Barang -->
                         <a wire:navigate href="{{ route('admin.barang.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
@@ -199,7 +196,7 @@
 
         <!-- Page Content -->
         <main class="py-8">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 {{ $slot }}
             </div>
         </main>

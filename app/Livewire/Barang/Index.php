@@ -20,6 +20,16 @@ class Index extends Component
     public $filterProdi = '';
     public $filterKategori = '';
 
+    public $showModal = false;
+
+    protected $listeners = ['closeModal' => 'closeModal'];
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+    }
+
+
     public function updatingSearch()
     {
         $this->resetPage();

@@ -106,12 +106,14 @@ class Index extends Component
 
     public function render()
     {
+        $prodiId = auth()->user()->prodi_id;
         $kondisis = Kondisi::query()
             ->when($this->search, function ($query) {
                 $query->where('nama_kondisi', 'like', '%' . $this->search . '%');
             })
             ->withCount('barangs')
             ->latest()
+            ->where('prodi_id', $prodiId)
             ->paginate(10);
 
         return view('livewire.kondisi.index')->with([

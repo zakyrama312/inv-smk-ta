@@ -114,6 +114,7 @@ class Index extends Component
             })
             ->withCount('barangs')
             ->latest()
+            ->where('prodi_id', auth()->user()->prodi_id)
             ->paginate(10);
 
         return view('livewire.kategori.index')->with([
