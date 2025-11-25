@@ -35,6 +35,11 @@ class Barang extends Model
         'jumlah_tersedia' => 'integer',
     ];
 
+    public function latestStok()
+    {
+        return $this->hasOne(BarangStok::class, 'barang_id')->latest();
+    }
+
     // Relationships
     public function prodi(): BelongsTo
     {

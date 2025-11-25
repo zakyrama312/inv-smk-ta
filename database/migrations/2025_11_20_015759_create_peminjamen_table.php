@@ -16,13 +16,12 @@ return new class extends Migration
             $table->foreignId('barang_id')->constrained('barang')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete(); // peminjam
             $table->string('nama_peminjam'); // redundant untuk history
+            $table->string('no_telepon', 15)->nullable();
             $table->integer('jumlah')->default(1);
             $table->date('tanggal_pinjam'); // actual tanggal pinjam
             $table->date('tanggal_kembali_rencana'); // rencana kembali
             $table->date('tanggal_kembali_actual')->nullable(); // actual kembali
-            $table->enum('status', ['dipinjam', 'dikembalikan', 'terlambat'])->default('dipinjam');
-            $table->foreignId('kondisi_awal_id')->nullable()->constrained('kondisi')->nullOnDelete(); // kondisi saat dipinjam
-            $table->foreignId('kondisi_akhir_id')->nullable()->constrained('kondisi')->nullOnDelete(); // kondisi saat dikembalikan
+            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'terlambat'])->default('dipinjam');
             $table->integer('denda')->default(0); // denda keterlambatan
             $table->text('keperluan')->nullable();
             $table->text('keterangan')->nullable();

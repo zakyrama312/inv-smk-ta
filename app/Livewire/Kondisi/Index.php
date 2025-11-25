@@ -66,6 +66,7 @@ class Index extends Component
             } else {
                 Kondisi::create([
                     'nama_kondisi' => $this->nama_kondisi,
+                    'prodi_id' => auth()->user()->prodi_id,
                 ]);
 
                 session()->flash('success', 'Kondisi berhasil ditambahkan!');

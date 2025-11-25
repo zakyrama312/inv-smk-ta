@@ -37,7 +37,6 @@ class BarangStok extends Model
     }
 
 
-
     // Helper methods
     public function hitungStokAkhir()
     {

@@ -67,6 +67,7 @@ class Index extends Component
             } else {
                 Kategori::create([
                     'nama_kategori' => $this->nama_kategori,
+                    'prodi_id' => auth()->user()->prodi_id,
                     'slug' => Str::slug($this->nama_kategori),
                 ]);
 

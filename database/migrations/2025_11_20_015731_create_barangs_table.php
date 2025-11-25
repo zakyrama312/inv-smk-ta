@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('ruang_id')->constrained('ruang')->cascadeOnDelete();
             $table->string('nama_barang');
             $table->string('slug')->unique();
-            $table->string('kode_barang')->unique()->nullable(); // untuk barcode/QR
+            $table->string('kode_barang')->nullable(); // untuk barcode/QR
             $table->text('deskripsi')->nullable();
             $table->string('merk')->nullable();
             $table->string('foto')->nullable(); // path foto

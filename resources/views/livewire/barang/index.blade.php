@@ -85,31 +85,31 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-linear-to-r from-gray-50 to-gray-100">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">No
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            No
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Tanggal Masuk
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Barang</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Kategori</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Kondisi</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Jumlah</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Stok Keluar</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Ruang</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Keterangan
-                        </th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($barangs as $index => $barang)
-                    <tr wire:key="barang-{{ $barang->id }}" class="hover:bg-gray-50 transition-colors">
+                    <tr wire:key="barang-{{ $barang->id }}" class="hover:bg-gray-50 transition-colors text-center">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ $barangs->firstItem() + $index }}
                         </td>
@@ -172,12 +172,17 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                {{ $barang->latestStok->stok_keluar ?? 0 }} {{ $barang->latestStok->satuan ?? '' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded-full">
                                 {{ $barang->ruang->nama_ruang }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <a href="{{ route('admin.barang.edit', $barang) }}"
+                            <a href="{{ route('admin.barang.edit', $barang->id) }}"
                                 class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded-lg transition-colors mr-2">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

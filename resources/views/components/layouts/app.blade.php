@@ -203,8 +203,6 @@
     </div>
 
     @livewireScripts
-    @livewireNavigate
-
 </body>
 
 </html>

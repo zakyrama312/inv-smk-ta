@@ -60,7 +60,10 @@
                         Kategori <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="kategori_id"
-                        class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('kategori_id') border-red-500 @enderror">
+                        @class([ 'block w-full px-3 py-2.5 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('kategori_id'),
+                        'border-gray-300' => ! $errors->has('kategori_id'),
+                        ])>
                         <option value="">-- Pilih Kategori --</option>
                         @foreach($kategoris as $kategori)
                         <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}</option>
@@ -77,7 +80,11 @@
                         Kondisi <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="kondisi_id"
-                        class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('kondisi_id') border-red-500 @enderror">
+                        @class([ 'block w-full px-3 py-2.5 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('kondisi_id'),
+                        'border-gray-300' => ! $errors->has('kondisi_id'),
+                        ])
+                        >
                         <option value="">-- Pilih Kondisi --</option>
                         @foreach($kondisis as $kondisi)
                         <option value="{{ $kondisi->id }}">{{ $kondisi->nama_kondisi }}</option>
@@ -94,7 +101,11 @@
                         Ruang <span class="text-red-500">*</span>
                     </label>
                     <select wire:model="ruang_id"
-                        class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('ruang_id') border-red-500 @enderror">
+                        @class([ 'block w-full px-3 py-2.5 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('ruang_id'),
+                        'border-gray-300' => ! $errors->has('ruang_id'),
+                        ])
+                        >
                         <option value="">-- Pilih Ruang --</option>
                         @foreach($ruangs as $ruang)
                         <option value="{{ $ruang->id }}">{{ $ruang->nama_ruang }}</option>
@@ -111,8 +122,11 @@
                         Nama Barang <span class="text-red-500">*</span>
                     </label>
                     <input wire:model="nama_barang" type="text"
-                        class="block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('nama_barang') border-red-500 @enderror"
-                        placeholder="Contoh: Laptop Dell Latitude">
+                        @class([ 'block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('nama_barang'),
+                    'border-gray-300' => ! $errors->has('nama_barang'),
+                    ])
+                    placeholder="Contoh: Laptop Dell Latitude">
                     @error('nama_barang')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -124,8 +138,11 @@
                         Kode Barang
                     </label>
                     <input wire:model="kode_barang" type="text"
-                        class="block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('kode_barang') border-red-500 @enderror"
-                        placeholder="Contoh: LPT-001">
+                        @class([ 'block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('kode_barang'),
+                    'border-gray-300' => ! $errors->has('kode_barang'),
+                    ])
+                    placeholder="Contoh: LPT-001">
                     @error('kode_barang')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -147,7 +164,10 @@
                         Jumlah Total <span class="text-red-500">*</span>
                     </label>
                     <input wire:model="jumlah_total" type="number" min="1"
-                        class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('jumlah_total') border-red-500 @enderror">
+                        @class([ 'block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('jumlah_total'),
+                    'border-gray-300' => ! $errors->has('jumlah_total'),
+                    ])>
                     @error('jumlah_total')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -159,8 +179,11 @@
                         Satuan <span class="text-red-500">*</span>
                     </label>
                     <input wire:model="satuan" type="text"
-                        class="block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('satuan') border-red-500 @enderror"
-                        placeholder="Contoh: Unit, Buah, Set">
+                        @class([ 'block w-full px-3 py-2.5 placeholder:text-gray-400 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+                        , 'border-red-500'=> $errors->has('satuan'),
+                    'border-gray-300' => ! $errors->has('satuan'),
+                    ])
+                    placeholder="Contoh: Unit, Buah, Set">
                     @error('satuan')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                     @enderror

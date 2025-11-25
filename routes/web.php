@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Livewire\Barang\Edit;
 use App\Livewire\Users\Index as UsersIndex;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +11,8 @@ use App\Livewire\Barang\Index as BarangIndex;
 use App\Livewire\Dashboard\Index as Dashboard;
 use App\Livewire\Kategori\Index;
 use App\Livewire\Kondisi\Index as KondisiIndex;
+use App\Livewire\Peminjaman\Create as PeminjamanCreate;
+use App\Livewire\Peminjaman\Index as PeminjamanIndex;
 use App\Livewire\Prodi\Index as ProdiIndex;
 use App\Livewire\Ruang\Index as RuangIndex;
 
@@ -33,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
         // data barang
         Route::get('/barang', BarangIndex::class)->name('barang.index');
         Route::get('/tambah-barang', Create::class)->name('barang.create');
-        Route::get('/barang/{barang}/edit', Edit::class)->name('barang.edit');
+        Route::get('/barang/{id}/edit', Edit::class)->name('barang.edit');
     });
 
 
@@ -45,10 +48,10 @@ Route::middleware(['auth'])->group(function () {
         })->name('permintaan.index');
     });
 
-    // Peminjaman Routes (accessible by all authenticated users)
-    Route::get('/peminjaman', function () {
-        return view('livewire.peminjaman.index');
-    })->name('peminjaman.index');
+    // peminjaman
+    Route::get('/peminjaman', PeminjamanIndex::class)->name('peminjaman.index');
+    Route::get('/tambah-peminjaman',  PeminjamanCreate::class)->name('peminjaman.create');
+
 
     // Laporan Routes (admin & kaprodi only)
     Route::middleware(['role:admin,kaprodi'])->group(function () {

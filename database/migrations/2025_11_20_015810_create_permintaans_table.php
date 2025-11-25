@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('kelas')->nullable();
             $table->integer('jumlah')->default(1);
             $table->date('tanggal_pinjam'); // tanggal rencana pinjam
-            $table->date('tanggal_kembali'); // tanggal rencana kembali
             $table->enum('status', ['menunggu', 'disetujui', 'ditolak', 'selesai'])->default('menunggu');
             $table->text('keperluan')->nullable(); // keperluan peminjaman
             $table->text('keterangan')->nullable(); // catatan admin/kaprodi

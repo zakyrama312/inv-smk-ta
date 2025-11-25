@@ -74,7 +74,7 @@ class Index extends Component
     public function render()
     {
         $query = Barang::query()
-            ->with(['prodi', 'kategori', 'kondisi']);
+            ->with(['prodi', 'kategori', 'kondisi', 'barangStoks']);
 
         // Apply filters based on user role
         if (auth()->user()->isKaprodi() || auth()->user()->isAnggota()) {
