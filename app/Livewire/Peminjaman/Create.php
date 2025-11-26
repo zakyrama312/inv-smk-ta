@@ -14,13 +14,11 @@ class Create extends Component
     public $kelas;
     public $no_telepon;
     public $barang_id;
-    public $jumlah_pinjam = '';
+    public $jumlah_pinjam = null;
     public $tanggal_pinjam;
     public $tanggal_kembali;
     public $keperluan;
-
     public $selectedBarang;
-
     public $searchBarang = '';
     public $filteredBarangs = [];
 
@@ -67,7 +65,7 @@ class Create extends Component
             'kelas' => 'required|string|max:100',
             'no_telepon' => 'required|string|max:20',
             'barang_id' => 'required|exists:barang,id',
-            'jumlah_pinjam' => 'required|integer|min:1|max:' . (intval($this->selectedBarang->jumlah_tersedia ?? 1)),
+            'jumlah_pinjam' => 'required|integer',
 
             'keperluan' => 'required|string',
             'tanggal_pinjam' => 'required|date|after_or_equal:today',
@@ -98,50 +96,56 @@ class Create extends Component
 
     public function save()
     {
-        $this->selectedBarang = Barang::find($this->barang_id);
-        $this->validate();
         try {
-            DB::beginTransaction();
-
-            // TAMBAHKAN VALIDASI INI
-            if (!is_numeric($this->jumlah_pinjam) || $this->jumlah_pinjam <= 0) {
-                throw new \Exception('Jumlah pinjam harus berupa angka valid');
+            if (empty($this->jumlah_pinjam) || !is_numeric($this->jumlah_pinjam)) {
+                session()->flash('error', 'Jumlah pinjam harus diisi dengan angka yang valid');
+                return;
             }
 
-            // 1. Buat record peminjaman
+            $this->jumlah_pinjam = (int) $this->jumlah_pinjam;
+
+            if ($this->jumlah_pinjam <= 0) {
+                session()->flash('error', 'Jumlah pinjam harus lebih dari 0');
+                return;
+            }
+
+            $this->validate();
+
+            DB::beginTransaction();
+
+            $jumlahPinjam = (int) $this->jumlah_pinjam;
+            $barang = Barang::lockForUpdate()->findOrFail($this->barang_id);
+            $stokTersedia = (int) $barang->jumlah_tersedia;
+
+            // Cek stok (penting untuk validasi)
+            if ($stokTersedia < $jumlahPinjam) {
+                throw new \Exception("Stok tidak mencukupi. Tersedia: {$stokTersedia}, Diminta: {$jumlahPinjam}");
+            }
+
+            // Buat peminjaman dengan status 'pending'
+            // Stok TIDAK dikurangi dulu, nunggu disetujui admin
             $peminjaman = Peminjaman::create([
                 'nama_peminjam' => $this->nama_peminjam,
                 'kelas' => $this->kelas,
                 'no_telepon' => $this->no_telepon,
                 'barang_id' => $this->barang_id,
-                'jumlah_pinjam' => (int) $this->jumlah_pinjam,
+                'jumlah' => $jumlahPinjam,
                 'tanggal_pinjam' => $this->tanggal_pinjam,
                 'tanggal_kembali_rencana' => $this->tanggal_kembali,
                 'keperluan' => $this->keperluan,
                 'status' => 'pending',
+                'user_id' => auth()->id(), // Pastikan ini ada
             ]);
 
-
-            // 2. Kurangi stok di table barangs
-            $barang = Barang::find($this->barang_id);
-            $barang->jumlah_tersedia = $barang->jumlah_tersedia - intval($this->jumlah_pinjam);
-            $barang->save();
-
-
-
-            // 3. Catat stok keluar di table barang_stoks
-            BarangStok::create([
-                'barang_id' => $this->barang_id,
-                'stok_masuk' => 0,
-                'stok_keluar' => (int) $this->jumlah_pinjam,
-                'keterangan' => "Peminjaman oleh {$this->nama_peminjam} ({$this->kelas}) - {$this->keperluan}",
-
-            ]);
+            // HAPUS kode insert ke barang_stok - tidak perlu lagi
 
             DB::commit();
 
-            session()->flash('success', 'Peminjaman berhasil ditambahkan!');
-            return redirect()->route('admin.peminjaman.index');
+            session()->flash('success', 'Peminjaman berhasil diajukan! Menunggu persetujuan admin.');
+            return redirect()->route('peminjaman.index');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            throw $e;
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Gagal menambahkan peminjaman: ' . $e->getMessage());

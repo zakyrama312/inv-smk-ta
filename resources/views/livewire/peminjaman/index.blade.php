@@ -63,9 +63,10 @@
                 <option value="">Semua Status</option>
                 <option value="pending">Pending</option>
                 <option value="dipinjam">Dipinjam</option>
-                <option value="selesai">Selesai</option>
+                <option value="dikembalikan">Dikembalikan</option>
                 <option value="ditolak">Ditolak</option>
             </select>
+
 
             <!-- Filter Prodi -->
             @if(auth()->user()->isAdmin())
@@ -115,8 +116,8 @@
         <div class="bg-linear-to-br from-green-400 to-green-600 rounded-xl p-4 text-white shadow-lg">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm opacity-90">Selesai</p>
-                    <p class="text-2xl font-bold">{{ $peminjamans->where('status', 'selesai')->count() }}</p>
+                    <p class="text-sm opacity-90">Dikembalikan</p>
+                    <p class="text-2xl font-bold">{{ $peminjamans->where('status', 'dikembalikan')->count() }}</p>
                 </div>
                 <div class="bg-white bg-opacity-20 rounded-lg p-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,9 +145,10 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 relative z-0">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <table class="w-full text-sm text-left text-gray-600">
+
                 <thead class="bg-linear-to-r from-gray-50 to-gray-100">
                     <tr>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -170,9 +172,11 @@
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Status
                         </th>
+                        @if (auth()->user()->isAdmin())
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Aksi
                         </th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -225,7 +229,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <span class="px-3 py-1 text-sm font-bold text-gray-900 bg-gray-100 rounded-full">
-                                {{ $peminjaman->jumlah_pinjam }}
+                                {{ $peminjaman->jumlah }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -238,38 +242,39 @@
                                     {{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->format('d M Y') }}
                                 </div>
                                 @endif
-                                @if($peminjaman->tanggal_kembali)
+                                @if($peminjaman->tanggal_kembali_actual)
+                                <!-- GANTI dari tanggal_kembali -->
                                 <div class="text-green-600"><span class="font-semibold">Kembali:</span>
-                                    {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($peminjaman->tanggal_kembali_actual)->format('d M Y') }}
                                 </div>
                                 @endif
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <span @class([ 'px-3 py-1 text-xs font-semibold rounded-full' , 'bg-yellow-100
-                                text-yellow-800'=> $peminjaman->status === 'pending',
+                            <span @class([ 'px-3 py-1 text-xs font-semibold rounded-full'
+                                , 'bg-yellow-100 text-yellow-800'=> $peminjaman->status === 'pending',
                                 'bg-blue-100 text-blue-800' => $peminjaman->status === 'dipinjam',
-                                'bg-green-100 text-green-800' => $peminjaman->status === 'selesai',
+                                'bg-green-100 text-green-800' => $peminjaman->status === 'dikembalikan',
                                 'bg-red-100 text-red-800' => $peminjaman->status === 'ditolak',
                                 ])>
                                 {{ ucfirst($peminjaman->status) }}
                             </span>
                         </td>
+                        @if (auth()->user()->isAdmin())
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                             <div class="flex justify-center gap-2">
                                 @if($peminjaman->status === 'pending')
                                 <button wire:click="updateStatus({{ $peminjaman->id }}, 'dipinjam')"
                                     wire:confirm="Konfirmasi peminjaman ini?"
-                                    class="inline-flex items-center px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-lg transition-colors">
+                                    class="relative z-10 inline-flex items-center px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-lg transition-colors">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7" />
                                     </svg>
                                     Setuju
                                 </button>
-                                <button wire:click="updateStatus({{ $peminjaman->id }}, 'ditolak')"
-                                    wire:confirm="Tolak peminjaman ini?"
-                                    class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors">
+                                <button wire:click="openRejectModal({{ $peminjaman->id }})"
+                                    class="relative z-10 inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
@@ -277,9 +282,10 @@
                                     Tolak
                                 </button>
                                 @elseif($peminjaman->status === 'dipinjam')
-                                <button wire:click="updateStatus({{ $peminjaman->id }}, 'selesai')"
+                                <!-- GANTI 'selesai' jadi 'dikembalikan' -->
+                                <button wire:click="updateStatus({{ $peminjaman->id }}, 'dikembalikan')"
                                     wire:confirm="Tandai barang sudah dikembalikan?"
-                                    class="inline-flex items-center px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors">
+                                    class="relative z-10 inline-flex items-center px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
@@ -288,17 +294,23 @@
                                 </button>
                                 @endif
 
+                                <!-- Tombol hapus hanya untuk yang bukan dikembalikan -->
+                                @if($peminjaman->status !== 'dikembalikan')
                                 <button wire:click="delete({{ $peminjaman->id }})"
                                     wire:confirm="Apakah Anda yakin ingin menghapus data ini?"
-                                    class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors">
+                                    class="relative z-10 inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-colors">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                     Hapus
                                 </button>
+                                @endif
                             </div>
                         </td>
+
+
+                        @endif
                     </tr>
                     @empty
                     <tr>
@@ -321,4 +333,63 @@
             {{ $peminjamans->links() }}
         </div>
     </div>
+    <!-- Modal Tolak Peminjaman -->
+    @if($showRejectModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 ">
+        <div class="relative w-full max-w-md p-4">
+            <div class="relative bg-white rounded-lg shadow">
+
+                <!-- Header -->
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        Tolak Peminjaman
+                    </h3>
+                    <button wire:click="closeRejectModal" type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Isi Modal -->
+                <div class="p-4 space-y-4">
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-gray-900">Alasan Penolakan</label>
+                        <textarea wire:model="rejectReason"
+                            class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500"
+                            rows="4" placeholder="Tuliskan alasan penolakan..."></textarea>
+
+                        @error('rejectReason')
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="flex justify-end items-center p-4 border-t border-gray-200 rounded-b">
+                    <button wire:click="closeRejectModal" type="button"
+                        class="py-2 px-4 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg">
+                        Batal
+                    </button>
+
+                    <button wire:click="confirmReject" type="button"
+                        class="ml-3 py-2 px-4 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg focus:ring-4 focus:ring-red-300">
+                        Tolak Sekarang
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @endif
+
+
+
+
+</div> <!-- End of main content -->
+
+
+</div> <!-- End of main wrapper -->
 </div>

@@ -20,6 +20,9 @@ class BarangStok extends Model
         'stok_akhir',
         'satuan',
         'status',
+        'tipe_transaksi',
+        'referensi_id',
+        'referensi_tipe',
         'keterangan',
     ];
 
@@ -107,5 +110,47 @@ class BarangStok extends Model
                 $barangStok->status = 'tersedia';
             }
         });
+    }
+    // Polymorphic-like relationship (manual)
+    public function peminjaman(): BelongsTo
+    {
+        return $this->belongsTo(Peminjaman::class, 'referensi_id')
+            ->where('referensi_tipe', 'peminjaman');
+    }
+
+    public function permintaan(): BelongsTo
+    {
+        return $this->belongsTo(Permintaan::class, 'referensi_id')
+            ->where('referensi_tipe', 'permintaan');
+    }
+
+    // Helper method untuk ambil referensi dinamis
+    public function getReferensiAttribute()
+    {
+        if ($this->referensi_tipe === 'peminjaman') {
+            return $this->peminjaman;
+        }
+
+        if ($this->referensi_tipe === 'permintaan') {
+            return $this->permintaan;
+        }
+
+        return null;
+    }
+
+    // Scope
+    public function scopeByBarang($query, $barangId)
+    {
+        return $query->where('barang_id', $barangId);
+    }
+
+    public function scopeByTipe($query, $tipe)
+    {
+        return $query->where('tipe_transaksi', $tipe);
+    }
+
+    public function scopeByPeriode($query, $start, $end)
+    {
+        return $query->whereBetween('created_at', [$start, $end]);
     }
 }

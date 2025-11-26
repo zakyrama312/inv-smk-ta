@@ -17,6 +17,8 @@ class Peminjaman extends Model
         'barang_id',
         'user_id',
         'nama_peminjam',
+        'no_telepon',
+        'kelas',
         'jumlah',
         'tanggal_pinjam',
         'tanggal_kembali_rencana',
@@ -58,29 +60,13 @@ class Peminjaman extends Model
         return $this->belongsTo(Kondisi::class, 'kondisi_akhir_id');
     }
 
-    // Helper methods
-    public function kembalikan($kondisiAkhirId, $keterangan = null)
+    public function barangStoks()
     {
-        $this->tanggal_kembali_actual = now();
-        $this->kondisi_akhir_id = $kondisiAkhirId;
-        $this->status = 'dikembalikan';
-
-        // Hitung denda jika terlambat
-        if ($this->tanggal_kembali_actual->gt($this->tanggal_kembali_rencana)) {
-            $hariTerlambat = $this->tanggal_kembali_actual->diffInDays($this->tanggal_kembali_rencana);
-            $this->denda = $hariTerlambat * 5000; // Rp 5.000 per hari
-        }
-
-        if ($keterangan) {
-            $this->keterangan = $keterangan;
-        }
-
-        $this->save();
-
-        // Update jumlah tersedia barang
-        $this->barang->increment('jumlah_tersedia', $this->jumlah);
+        return $this->hasMany(BarangStok::class, 'referensi_id')
+            ->where('referensi_tipe', 'peminjaman');
     }
 
+    // Attributes
     public function getHariTerlambatAttribute()
     {
         if ($this->status === 'dikembalikan' && $this->tanggal_kembali_actual) {
@@ -101,16 +87,6 @@ class Peminjaman extends Model
     public function getIsTerlambatAttribute()
     {
         return $this->status === 'dipinjam' && now()->gt($this->tanggal_kembali_rencana);
-    }
-
-    public function getStatusBadgeAttribute()
-    {
-        return match ($this->status) {
-            'dipinjam' => $this->is_terlambat ? 'danger' : 'warning',
-            'dikembalikan' => 'success',
-            'terlambat' => 'danger',
-            default => 'secondary',
-        };
     }
 
     // Scopes
@@ -145,9 +121,50 @@ class Peminjaman extends Model
     // Events
     protected static function booted()
     {
-        static::creating(function ($peminjaman) {
-            // Kurangi jumlah tersedia saat peminjaman dibuat
-            $peminjaman->barang->decrement('jumlah_tersedia', $peminjaman->jumlah);
+        // HAPUS EVENT 'created' - Stok jangan berkurang dulu saat peminjaman dibuat
+
+        // Event saat peminjaman diupdate
+        static::updated(function ($peminjaman) {
+            // 1. Saat status berubah dari 'pending' ke 'dipinjam' (DISETUJUI)
+            if (
+                $peminjaman->isDirty('status') &&
+                $peminjaman->status === 'dipinjam' &&
+                $peminjaman->getOriginal('status') === 'pending'
+            ) {
+
+                // Kurangi stok
+                $peminjaman->barang->decrement('jumlah_tersedia', $peminjaman->jumlah);
+
+                // Catat di barang_stok
+                \App\Models\BarangStok::create([
+                    'barang_id' => $peminjaman->barang_id,
+                    'stok_masuk' => 0,
+                    'stok_keluar' => $peminjaman->jumlah,
+                    'tipe_transaksi' => 'peminjaman',
+                    'referensi_id' => $peminjaman->id,
+                    'referensi_tipe' => 'peminjaman',
+                    'keterangan' => "Peminjaman oleh {$peminjaman->nama_peminjam} ({$peminjaman->kelas})" .
+                        ($peminjaman->keperluan ? " - {$peminjaman->keperluan}" : ""),
+                ]);
+            }
+
+            // 2. Saat status berubah jadi 'dikembalikan'
+            if ($peminjaman->isDirty('status') && $peminjaman->status === 'dikembalikan') {
+                // Tambah stok kembali
+                $peminjaman->barang->increment('jumlah_tersedia', $peminjaman->jumlah);
+
+                // Catat di barang_stok
+                BarangStok::create([
+                    'barang_id' => $peminjaman->barang_id,
+                    'stok_masuk' => $peminjaman->jumlah,
+                    'stok_keluar' => 0,
+                    'tipe_transaksi' => 'pengembalian',
+                    'referensi_id' => $peminjaman->id,
+                    'referensi_tipe' => 'peminjaman',
+                    'keterangan' => "Pengembalian dari {$peminjaman->nama_peminjam} ({$peminjaman->kelas})" .
+                        ($peminjaman->keterangan ? " - {$peminjaman->keterangan}" : ""),
+                ]);
+            }
         });
     }
 }

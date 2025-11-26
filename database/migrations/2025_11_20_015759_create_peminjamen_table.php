@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('tanggal_pinjam'); // actual tanggal pinjam
             $table->date('tanggal_kembali_rencana'); // rencana kembali
             $table->date('tanggal_kembali_actual')->nullable(); // actual kembali
-            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'terlambat'])->default('dipinjam');
+            $table->enum('status', ['pending', 'dipinjam', 'dikembalikan', 'terlambat', 'ditolak'])->default('dipinjam');
             $table->integer('denda')->default(0); // denda keterlambatan
             $table->text('keperluan')->nullable();
             $table->text('keterangan')->nullable();

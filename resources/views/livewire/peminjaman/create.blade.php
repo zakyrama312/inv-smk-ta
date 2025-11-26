@@ -159,7 +159,8 @@
                                             <div class="flex items-center justify-between">
                                                 <div class="flex-1">
                                                     <p class="text-sm font-semibold text-gray-900">
-                                                        {{ $barang->nama_barang }}</p>
+                                                        {{ $barang->nama_barang }}
+                                                    </p>
                                                     <div class="flex items-center mt-1 space-x-2">
                                                         <span
                                                             class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -209,7 +210,8 @@
                                     <div class="flex items-start justify-between">
                                         <div class="flex-1">
                                             <p class="text-sm font-semibold text-gray-900 mb-2">
-                                                {{ $selectedBarang->nama_barang }}</p>
+                                                {{ $selectedBarang->nama_barang }}
+                                            </p>
                                             <div class="flex items-center space-x-2">
                                                 <span
                                                     class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -254,7 +256,7 @@
                             <label for="jumlah_pinjam" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Jumlah Pinjam <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" wire:model="jumlah_pinjam" id="jumlah_pinjam" min="1"
+                            <input type="number" wire:model="jumlah_pinjam" id="jumlah_pinjam" min="1" step="1"
                                 max="{{ $selectedBarang->jumlah_tersedia ?? 1 }}"
                                 @class([ 'block w-full px-4 py-2.5 placeholder-gray-400 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-all'
                                 , $errors->has('jumlah_pinjam') ? 'border-red-500' : 'border-gray-300'

@@ -306,7 +306,7 @@
                     <p class="text-sm text-gray-600">Approve/tolak permintaan</p>
                 </div>
             </a>
-            <a href="{{ route('barang.index') }}"
+            <a href="{{ route('admin.barang.index') }}"
                 class="group flex items-center p-4 bg-linear-to-r from-blue-50 to-blue-100 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all transform hover:scale-105 hover:shadow-md">
                 <div class="bg-blue-500 rounded-lg p-3 mr-4 group-hover:bg-blue-600 transition-colors">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,7 +334,7 @@
                 </div>
             </a>
             @else
-            <a href="{{ route('barang.index') }}"
+            <a href="{{ route('katalog.index') }}"
                 class="group flex items-center p-4 bg-linear-to-r from-blue-50 to-blue-100 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all transform hover:scale-105 hover:shadow-md">
                 <div class="bg-blue-500 rounded-lg p-3 mr-4 group-hover:bg-blue-600 transition-colors">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

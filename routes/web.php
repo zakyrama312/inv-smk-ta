@@ -9,6 +9,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Barang\Create;
 use App\Livewire\Barang\Index as BarangIndex;
 use App\Livewire\Dashboard\Index as Dashboard;
+use App\Livewire\Katalog\Index as KatalogIndex;
 use App\Livewire\Kategori\Index;
 use App\Livewire\Kondisi\Index as KondisiIndex;
 use App\Livewire\Peminjaman\Create as PeminjamanCreate;
@@ -52,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/peminjaman', PeminjamanIndex::class)->name('peminjaman.index');
     Route::get('/tambah-peminjaman',  PeminjamanCreate::class)->name('peminjaman.create');
 
+    // Katalog
+    Route::get('/katalog', KatalogIndex::class)->name('katalog.index');
 
     // Laporan Routes (admin & kaprodi only)
     Route::middleware(['role:admin,kaprodi'])->group(function () {

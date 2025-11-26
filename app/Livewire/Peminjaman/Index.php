@@ -17,6 +17,11 @@ class Index extends Component
     public $filterStatus = '';
     public $filterProdi = '';
 
+    // Property untuk modal tolak
+    public $showRejectModal = false;
+    public $rejectPeminjamanId = null;
+    public $rejectReason = '';
+
     protected $queryString = [
         'search' => ['except' => ''],
         'filterStatus' => ['except' => ''],
@@ -38,6 +43,59 @@ class Index extends Component
         $this->resetPage();
     }
 
+    // Method untuk buka modal tolak
+    public function openRejectModal($id)
+    {
+        $this->rejectPeminjamanId = $id;
+        $this->rejectReason = '';
+        $this->showRejectModal = true;
+    }
+
+    // Method untuk tutup modal
+    public function closeRejectModal()
+    {
+        $this->showRejectModal = false;
+        $this->rejectPeminjamanId = null;
+        $this->rejectReason = '';
+    }
+
+    // Method untuk confirm tolak dengan alasan
+    public function confirmReject()
+    {
+        $this->validate([
+            'rejectReason' => 'required|string|min:10',
+        ], [
+            'rejectReason.required' => 'Alasan penolakan wajib diisi',
+            'rejectReason.min' => 'Alasan penolakan minimal 10 karakter',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $peminjaman = Peminjaman::findOrFail($this->rejectPeminjamanId);
+
+            if ($peminjaman->status !== 'pending') {
+                throw new \Exception('Hanya peminjaman dengan status pending yang bisa ditolak');
+            }
+
+            // Update status dan keterangan
+            $peminjaman->update([
+                'status' => 'ditolak',
+                'keterangan' => "Ditolak: " . $this->rejectReason,
+            ]);
+
+            // TIDAK perlu kembalikan stok karena stok belum dikurangi saat pending
+
+            DB::commit();
+
+            $this->closeRejectModal();
+            session()->flash('success', 'Peminjaman berhasil ditolak!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            session()->flash('error', 'Gagal menolak peminjaman: ' . $e->getMessage());
+        }
+    }
+
     public function delete($id)
     {
         try {
@@ -46,18 +104,19 @@ class Index extends Component
             $peminjaman = Peminjaman::findOrFail($id);
             $barang = $peminjaman->barang;
 
-            // Kembalikan stok jika peminjaman belum selesai
-            if ($peminjaman->status !== 'selesai') {
-                $barang->increment('jumlah_tersedia', $peminjaman->jumlah_pinjam);
+            // Kembalikan stok HANYA jika status 'dipinjam' (sudah disetujui)
+            if ($peminjaman->status === 'dipinjam') {
+                $barang->increment('jumlah_tersedia', $peminjaman->jumlah);
 
-                // Catat pembatalan di barang_stoks
+                // Catat pembatalan di barang_stok
                 BarangStok::create([
                     'barang_id' => $peminjaman->barang_id,
-                    'stok_masuk' => $peminjaman->jumlah_pinjam,
+                    'stok_masuk' => $peminjaman->jumlah,
                     'stok_keluar' => 0,
-                    'keterangan' => "Penghapusan peminjaman - {$peminjaman->nama_peminjam} ({$peminjaman->kelas})",
-                    'tanggal' => now(),
-                    'user_id' => auth()->id(),
+                    'tipe_transaksi' => 'penyesuaian',
+                    'referensi_id' => null,
+                    'referensi_tipe' => null,
+                    'keterangan' => "Penghapusan peminjaman (dibatalkan) - {$peminjaman->nama_peminjam} ({$peminjaman->kelas})",
                 ]);
             }
 
@@ -77,60 +136,39 @@ class Index extends Component
             DB::beginTransaction();
 
             $peminjaman = Peminjaman::findOrFail($id);
-            $barang = $peminjaman->barang;
 
             if ($status === 'dipinjam' && $peminjaman->status === 'pending') {
-                // Konfirmasi peminjaman
+                // Konfirmasi peminjaman (pending -> dipinjam)
+                // Event 'updated' di Model akan otomatis kurangi stok
+
                 $peminjaman->update([
                     'status' => 'dipinjam',
                     'tanggal_pinjam' => now(),
                 ]);
+
                 session()->flash('success', 'Peminjaman berhasil dikonfirmasi!');
-            } elseif ($status === 'selesai' && $peminjaman->status === 'dipinjam') {
-                // Kembalikan barang
+            } elseif ($status === 'dikembalikan' && $peminjaman->status === 'dipinjam') {
+                // Kembalikan barang (dipinjam -> dikembalikan)
+                // Event 'updated' di Model akan otomatis tambah stok
+
                 $peminjaman->update([
-                    'status' => 'selesai',
-                    'tanggal_kembali' => now(),
-                ]);
-
-                // Tambah stok kembali di table barangs
-                $barang->increment('jumlah_tersedia', $peminjaman->jumlah_pinjam);
-
-                // Catat stok masuk di table barang_stoks
-                BarangStok::create([
-                    'barang_id' => $peminjaman->barang_id,
-                    'stok_masuk' => $peminjaman->jumlah_pinjam,
-                    'stok_keluar' => 0,
-                    'keterangan' => "Pengembalian dari {$peminjaman->nama_peminjam} ({$peminjaman->kelas})",
-                    'tanggal' => now(),
-                    'user_id' => auth()->id(),
+                    'status' => 'dikembalikan',
+                    'tanggal_kembali_actual' => now(),
                 ]);
 
                 session()->flash('success', 'Barang berhasil dikembalikan!');
-            } elseif ($status === 'ditolak' && $peminjaman->status === 'pending') {
-                // Tolak peminjaman - kembalikan stok
-                $peminjaman->update(['status' => 'ditolak']);
-
-                // Tambah stok kembali di table barangs
-                $barang->increment('jumlah_tersedia', $peminjaman->jumlah_pinjam);
-
-                // Catat pembatalan di table barang_stoks
-                BarangStok::create([
-                    'barang_id' => $peminjaman->barang_id,
-                    'stok_masuk' => $peminjaman->jumlah_pinjam,
-                    'stok_keluar' => 0,
-                    'keterangan' => "Pembatalan peminjaman - {$peminjaman->nama_peminjam} ({$peminjaman->kelas})",
-                    'tanggal' => now(),
-                    'user_id' => auth()->id(),
-                ]);
-
-                session()->flash('success', 'Peminjaman ditolak!');
             }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Gagal mengubah status: ' . $e->getMessage());
+
+            \Log::error('Update Status Error', [
+                'peminjaman_id' => $id,
+                'status_baru' => $status,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
