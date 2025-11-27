@@ -21,20 +21,13 @@ class Index extends Component
         // Data yang ditampilkan berbeda berdasarkan role
         $stats = [];
 
-        if ($user->isAdmin()) {
-            // Admin melihat semua data
+        if ($user->isAdmin() || $user->isKaprodi()) {
+            // Admin dan kaprodi melihat semua data
             $stats = [
                 'total_barang' => Barang::count(),
                 'total_users' => User::count(),
                 'total_peminjaman' => Peminjaman::dipinjam()->count(),
                 'permintaan_menunggu' => Permintaan::menunggu()->count(),
-            ];
-        } elseif ($user->isKaprodi()) {
-            // Kaprodi melihat data prodi mereka
-            $stats = [
-                'total_barang' => Barang::byProdi($user->prodi_id)->count(),
-                'total_peminjaman' => Peminjaman::byProdi($user->prodi_id)->dipinjam()->count(),
-                'permintaan_menunggu' => Permintaan::byProdi($user->prodi_id)->menunggu()->count(),
             ];
         } else {
             // Anggota melihat data mereka sendiri

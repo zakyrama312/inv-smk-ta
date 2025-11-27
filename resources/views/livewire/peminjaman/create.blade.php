@@ -149,11 +149,11 @@
                                 </div>
 
                                 <!-- Dropdown Results -->
-                                @if($searchBarang && !$selectedBarang && count($filteredBarangs) > 0)
+                                @if($searchBarang && !$selectedBarang && $this->filteredBarangs->count() > 0)
                                 <div
                                     class="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-xl max-h-80 overflow-hidden">
                                     <div class="overflow-y-auto max-h-80">
-                                        @foreach($filteredBarangs as $barang)
+                                        @foreach($this->filteredBarangs as $barang)
                                         <div wire:click="selectBarang({{ $barang->id }})"
                                             class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0">
                                             <div class="flex items-center justify-between">
@@ -189,7 +189,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                @elseif($searchBarang && !$selectedBarang && count($filteredBarangs) === 0)
+                                @elseif($searchBarang && !$selectedBarang && $this->filteredBarangs->count() === 0)
                                 <!-- No Results -->
                                 <div
                                     class="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-xl">

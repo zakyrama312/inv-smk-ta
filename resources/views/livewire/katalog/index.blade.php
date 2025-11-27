@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50">
+<div class="min-h-screen ">
     <!-- Page Header -->
-    <div class="bg-white shadow-md border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between">
                 <div>
                     <h1
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Search & Filter Section -->
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -91,7 +91,7 @@
         </div>
 
         <!-- Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
             @forelse($barangs as $barang)
             @php
             $status = $this->getStatusBadge($barang);

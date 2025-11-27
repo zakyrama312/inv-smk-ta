@@ -8,7 +8,7 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        @if(auth()->user()->isAdmin())
+        @if(auth()->user()->hasRole(['admin','kaprodi']))
         <!-- Admin Stats -->
 
         <!-- Total Barang -->
@@ -19,7 +19,7 @@
                     <p class="text-blue-100 text-sm font-medium mb-1">Total Barang</p>
                     <p class="text-4xl font-bold">{{ $stats['total_barang'] }}</p>
                 </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
+                <div class="bg-blue-500 bg-opacity-20 rounded-xl p-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -44,7 +44,7 @@
                     <p class="text-purple-100 text-sm font-medium mb-1">Total Users</p>
                     <p class="text-4xl font-bold">{{ $stats['total_users'] }}</p>
                 </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
+                <div class="bg-purple-500 bg-opacity-20 rounded-xl p-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -68,7 +68,7 @@
                     <p class="text-orange-100 text-sm font-medium mb-1">Sedang Dipinjam</p>
                     <p class="text-4xl font-bold">{{ $stats['total_peminjaman'] }}</p>
                 </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
+                <div class="bg-orange-500 bg-opacity-20 rounded-xl p-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -93,7 +93,7 @@
                     <p class="text-red-100 text-sm font-medium mb-1">Permintaan Menunggu</p>
                     <p class="text-4xl font-bold">{{ $stats['permintaan_menunggu'] }}</p>
                 </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
+                <div class="bg-red-500 bg-opacity-20 rounded-xl p-3">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -110,82 +110,9 @@
             </div>
         </div>
 
-        @elseif(auth()->user()->isKaprodi())
-        <!-- Kaprodi Stats -->
+        @endif
 
-        <!-- Total Barang Prodi -->
-        <div
-            class="bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-sm font-medium mb-1">Total Barang Prodi</p>
-                    <p class="text-4xl font-bold">{{ $stats['total_barang'] }}</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm text-blue-100">
-                <span class="px-2 py-1 bg-white bg-opacity-20 rounded-full text-xs font-semibold">
-                    {{ auth()->user()->prodi->nama_prodi }}
-                </span>
-            </div>
-        </div>
-
-        <!-- Sedang Dipinjam -->
-        <div
-            class="bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-orange-100 text-sm font-medium mb-1">Sedang Dipinjam</p>
-                    <p class="text-4xl font-bold">{{ $stats['total_peminjaman'] }}</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm text-orange-100">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                        clip-rule="evenodd" />
-                </svg>
-                Status aktif
-            </div>
-        </div>
-
-        <!-- Permintaan Menunggu -->
-        <div
-            class="bg-linear-to-br from-red-500 to-red-600 rounded-2xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-red-100 text-sm font-medium mb-1">Permintaan Menunggu</p>
-                    <p class="text-4xl font-bold">{{ $stats['permintaan_menunggu'] }}</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-3">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center text-sm text-red-100">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd" />
-                </svg>
-                Perlu approval
-            </div>
-        </div>
-
-        @else
+        @if (auth()->user()->hasRole('anggota'))
         <!-- Anggota Stats -->
 
         <!-- Permintaan Saya -->
@@ -304,19 +231,6 @@
                     <p class="font-semibold text-gray-900 group-hover:text-red-700 transition-colors">Review Permintaan
                     </p>
                     <p class="text-sm text-gray-600">Approve/tolak permintaan</p>
-                </div>
-            </a>
-            <a href="{{ route('admin.barang.index') }}"
-                class="group flex items-center p-4 bg-linear-to-r from-blue-50 to-blue-100 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all transform hover:scale-105 hover:shadow-md">
-                <div class="bg-blue-500 rounded-lg p-3 mr-4 group-hover:bg-blue-600 transition-colors">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">Kelola Barang</p>
-                    <p class="text-sm text-gray-600">Data barang prodi</p>
                 </div>
             </a>
             <a href="{{ route('laporan.index') }}"

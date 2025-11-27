@@ -13,7 +13,7 @@
 <body class="bg-linear-to-br from-gray-50 to-gray-100">
     <div class="min-h-screen">
         <!-- Navbar -->
-        <nav class="bg-white shadow-lg border-b border-gray-200">
+        <nav x-data="{ mobileOpen: false }" class="bg-white shadow-lg border-b border-gray-200">
             <div class="max-w mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
 
@@ -32,7 +32,20 @@
                         </h1>
                     </div>
 
-                    <!-- CENTER: MENU NAVIGATION -->
+                    <!-- HAMBURGER (MOBILE ONLY) -->
+                    <button @click="mobileOpen = !mobileOpen"
+                        class="sm:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100">
+                        <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg x-show="mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <!-- DESKTOP MENU -->
                     <div class="hidden sm:flex flex-1 justify-center space-x-1">
 
                         <a wire:navigate href="{{ route('dashboard') }}"
@@ -54,7 +67,7 @@
                             Users
                         </a>
 
-                        <!-- Master Data Dropdown -->
+                        <!-- MASTER DATA DROPDOWN -->
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
@@ -69,13 +82,7 @@
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <div x-show="open" @click.away="open = false"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="transform opacity-0 scale-95"
-                                x-transition:enter-end="transform opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="transform opacity-100 scale-100"
-                                x-transition:leave-end="transform opacity-0 scale-95"
+                            <div x-show="open" @click.away="open = false" x-transition
                                 class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div class="py-1">
                                     <a wire:navigate href="{{ route('admin.prodi.index') }}"
@@ -89,6 +96,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- Barang -->
                         <a wire:navigate href="{{ route('admin.barang.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
@@ -97,11 +105,10 @@
                                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                             Barang
-
                         </a>
                         @endif
+
                         @if(auth()->user()->hasRole(['admin', 'kaprodi','anggota']))
-                        <!-- Peminjaman -->
                         <a wire:navigate href="{{ route('peminjaman.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,18 +118,18 @@
                             Peminjaman
                         </a>
 
-                        <!-- Permintaan -->
                         <a wire:navigate href="{{ route('permintaan.index') }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
-                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
                             </svg>
                             Permintaan
                         </a>
                         @endif
-                        <!-- Laporan (Admin & Kaprodi) -->
+
+                        @if(auth()->user()->hasRole(['admin', 'kaprodi']))
+                        <!-- LAPORAN DROPDOWN -->
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-50">
@@ -137,13 +144,8 @@
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <div x-show="open" @click.away="open = false"
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="transform opacity-0 scale-95"
-                                x-transition:enter-end="transform opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="transform opacity-100 scale-100"
-                                x-transition:leave-end="transform opacity-0 scale-95"
+
+                            <div x-show="open" @click.away="open = false" x-transition
                                 class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div class="py-1">
                                     <a wire:navigate href="{{ route('laporan.index') }}?type=barang"
@@ -158,10 +160,11 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
 
-                    <!-- RIGHT: USER INFO -->
-                    <div class="flex items-center space-x-4">
+                    <!-- USER INFO (DESKTOP) -->
+                    <div class="hidden sm:flex items-center space-x-4">
                         @auth
                         @if(auth()->user()->prodi)
                         <span class="hidden md:block text-xs text-gray-500 px-3 py-1 bg-gray-100 rounded-full">
@@ -169,13 +172,18 @@
                         </span>
                         @endif
 
+                        @if(auth()->user()->hasRole(['admin', 'kaprodi']))
+                        <livewire:components.notificationbell />
+                        @endif
+
                         <span class="text-sm font-medium text-gray-700 me-3">{{ auth()->user()->name }}</span>
 
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full shadow-sm text-white
-                            @if(auth()->user()->isAdmin()) bg-red-500
-                            @elseif(auth()->user()->isKaprodi()) bg-blue-600
-                            @else bg-linear-to-r from-green-500 to-green-600
-                            @endif">
+                        <span @class([ 'px-3 py-1 text-xs font-semibold rounded-full shadow-sm text-white'
+                            , 'bg-red-500'=> auth()->user()->isAdmin(),
+                            'bg-blue-600' => auth()->user()->isKaprodi(),
+                            'bg-gradient-to-r from-green-500 to-green-600' =>
+                            !auth()->user()->isAdmin() && !auth()->user()->isKaprodi(),
+                            ])>
                             {{ ucfirst(auth()->user()->role) }}
                         </span>
 
@@ -189,20 +197,112 @@
                         </a>
                         @endauth
                     </div>
+
                 </div>
             </div>
+
+            <!-- MOBILE MENU DROPDOWN -->
+            <div x-show="mobileOpen" x-transition class="sm:hidden border-t bg-white px-4 pb-4">
+
+                <!-- MENU ITEMS MOBILE -->
+                <div class="flex flex-col space-y-2 pt-3">
+
+                    <a wire:navigate href="{{ route('dashboard') }}"
+                        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Dashboard</a>
+
+                    @if(auth()->user()->hasRole(['admin']))
+                    <a wire:navigate href="{{ route('admin.users.index') }}"
+                        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Users</a>
+
+                    <!-- MASTER DATA -->
+                    <div x-data="{ open: false }">
+                        <button @click="open = !open"
+                            class="w-full px-3 py-2 flex justify-between text-gray-700 hover:bg-gray-50">
+                            Master Data
+                            <span x-text="open ? '▲' : '▼'"></span>
+                        </button>
+
+                        <div x-show="open" class="ml-4 flex flex-col space-y-1">
+                            <a wire:navigate href="{{ route('admin.prodi.index') }}"
+                                class="py-1 text-gray-600">Prodi</a>
+                            <a wire:navigate href="{{ route('admin.kategori.index') }}"
+                                class="py-1 text-gray-600">Kategori</a>
+                            <a wire:navigate href="{{ route('admin.kondisi.index') }}"
+                                class="py-1 text-gray-600">Kondisi</a>
+                            <a wire:navigate href="{{ route('admin.ruang.index') }}"
+                                class="py-1 text-gray-600">Ruang</a>
+                        </div>
+                    </div>
+
+                    <a wire:navigate href="{{ route('admin.barang.index') }}"
+                        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Barang</a>
+                    @endif
+
+                    @if(auth()->user()->hasRole(['admin','kaprodi','anggota']))
+                    <a wire:navigate href="{{ route('peminjaman.index') }}"
+                        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Peminjaman</a>
+
+                    <a wire:navigate href="{{ route('permintaan.index') }}"
+                        class="px-3 py-2 rounded-md text-gray-700 hover:bg-gray-50">Permintaan</a>
+                    @endif
+
+                    @if(auth()->user()->hasRole(['admin','kaprodi']))
+                    <!-- LAPORAN -->
+                    <div x-data="{ open: false }">
+                        <button @click="open = !open"
+                            class="w-full px-3 py-2 flex justify-between text-gray-700 hover:bg-gray-50">
+                            Laporan
+                            <span x-text="open ? '▲' : '▼'"></span>
+                        </button>
+
+                        <div x-show="open" class="ml-4 flex flex-col space-y-1">
+                            <a wire:navigate href="{{ route('laporan.index') }}?type=barang"
+                                class="py-1 text-gray-600">Laporan Barang</a>
+                            <a wire:navigate href="{{ route('laporan.index') }}?type=peminjaman"
+                                class="py-1 text-gray-600">Laporan Peminjaman</a>
+                            <a wire:navigate href="{{ route('laporan.index') }}?type=permintaan"
+                                class="py-1 text-gray-600">Laporan Permintaan</a>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- USER INFO MOBILE -->
+                    <div class="pt-3 border-t">
+                        <div class="text-gray-700 font-medium">{{ auth()->user()->name }}</div>
+                        <div class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</div>
+
+                        <a wire:navigate href="{{ route('logout') }}"
+                            class="block mt-2 px-3 py-2 rounded-md text-red-600 hover:bg-red-50">
+                            Logout
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
         </nav>
 
 
+
         <!-- Page Content -->
-        <main class="py-8">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+        <main class="py-6 sm:py-8">
+            <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                 {{ $slot }}
             </div>
         </main>
+
     </div>
 
     @livewireScripts
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('redirectTo', (data) => {
+                window.location.href = data.url;
+            });
+        });
+    </script>
+
 </body>
 
 </html>

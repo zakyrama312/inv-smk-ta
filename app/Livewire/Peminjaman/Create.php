@@ -20,7 +20,6 @@ class Create extends Component
     public $keperluan;
     public $selectedBarang;
     public $searchBarang = '';
-    public $filteredBarangs = [];
 
     public function mount()
     {
@@ -28,27 +27,29 @@ class Create extends Component
         $this->tanggal_pinjam = now()->format('Y-m-d');
     }
 
-    public function updatedSearchBarang()
+    public function getFilteredBarangsProperty()
     {
-        if (strlen($this->searchBarang) >= 2) {
-            $this->filteredBarangs = Barang::where('nama_barang', 'like', '%' . $this->searchBarang . '%')
-                ->orWhereHas('ruang', function ($q) {
-                    $q->where('nama_ruang', 'like', '%' . $this->searchBarang . '%');
-                })
-                ->with('ruang')
-                ->limit(6)
-                ->get();
-        } else {
-            $this->filteredBarangs = [];
+        if (!$this->searchBarang || $this->selectedBarang) {
+            return collect([]);
         }
+
+        return Barang::where(function ($q) {
+            $q->where('nama_barang', 'like', '%' . $this->searchBarang . '%')
+                ->orWhereHas('ruang', function ($r) {
+                    $r->where('nama_ruang', 'like', '%' . $this->searchBarang . '%');
+                });
+        })
+            ->with('ruang')
+            ->limit(6)
+            ->get();
     }
+
 
     public function selectBarang($barangId)
     {
         $this->barang_id = $barangId;
         $this->selectedBarang = Barang::with('ruang')->find($barangId);
         $this->searchBarang = $this->selectedBarang->nama_barang;
-        $this->filteredBarangs = [];
     }
 
     public function clearBarang()
@@ -56,7 +57,6 @@ class Create extends Component
         $this->barang_id = null;
         $this->selectedBarang = null;
         $this->searchBarang = '';
-        $this->filteredBarangs = [];
     }
     protected function rules()
     {
