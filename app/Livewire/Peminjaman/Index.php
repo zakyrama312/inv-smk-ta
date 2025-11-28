@@ -16,16 +16,21 @@ class Index extends Component
     public $search = '';
     public $filterStatus = '';
     public $filterProdi = '';
+    public $filterTanggalMulai = '';
+    public $filterTanggalSelesai = '';
 
     // Property untuk modal tolak
     public $showRejectModal = false;
     public $rejectPeminjamanId = null;
     public $rejectReason = '';
 
+
     protected $queryString = [
         'search' => ['except' => ''],
         'filterStatus' => ['except' => ''],
         'filterProdi' => ['except' => ''],
+        'filterTanggalMulai' => ['except' => ''],
+        'filterTanggalSelesai' => ['except' => ''],
     ];
 
     public function updatingSearch()
@@ -43,6 +48,24 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatingFilterTanggalMulai()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterTanggalSelesai()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->filterStatus = '';
+        $this->filterTanggalMulai = '';
+        $this->filterTanggalSelesai = '';
+        $this->resetPage();
+    }
     // Method untuk buka modal tolak
     public function openRejectModal($id)
     {
@@ -192,6 +215,12 @@ class Index extends Component
                 $q->whereHas('barang', function ($query) {
                     $query->where('prodi_id', $this->filterProdi);
                 });
+            })
+            ->when($this->filterTanggalMulai, function ($q) {
+                $q->whereDate('tanggal_pinjam', '>=', $this->filterTanggalMulai);
+            })
+            ->when($this->filterTanggalSelesai, function ($q) {
+                $q->whereDate('tanggal_pinjam', '<=', $this->filterTanggalSelesai);
             })
             ->latest()
             ->paginate(10);

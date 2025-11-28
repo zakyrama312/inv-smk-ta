@@ -26,16 +26,7 @@ class NotificationBell extends Component
     }
 
 
-    public function goToDetail($peminjamanId)
-    {
-        $this->dispatch('redirectPage', url('/peminjaman'));
-    }
 
-    public function goToAllPeminjaman()
-    {
-
-        $this->dispatch('redirectPage', url('/peminjaman'));
-    }
 
     public function render()
     {
